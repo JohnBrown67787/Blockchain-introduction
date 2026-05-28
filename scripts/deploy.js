@@ -2,13 +2,28 @@ const { ethers } = require("hardhat");
 
 async function main() {
 
-    const Storage = await ethers.getContractFactory("SimpleStorage");
+    // Get LabToken contract factory
+    const LabToken = await ethers.getContractFactory("LabToken");
 
-    const contract = await Storage.deploy();
+    // Deploy contract
+    const token = await LabToken.deploy();
 
-    await contract.waitForDeployment();
+    // Wait for deployment
+    await token.waitForDeployment();
 
-    console.log("Contract deployed to:", await contract.getAddress());
+    // Print contract address
+    console.log("LabToken deployed to:", await token.getAddress());
+
+    // Print deployer balance
+    const [owner] = await ethers.getSigners();
+
+    const balance = await token.balanceOf(owner.address);
+
+    console.log(
+        "Owner token balance:",
+        ethers.formatUnits(balance, 18),
+        "LTK"
+    );
 }
 
 main().catch((err) => {
